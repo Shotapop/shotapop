@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>shotapop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800;900&family=Rubik:wght@500;700;800&family=Marck+Script&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --blue:#1b3df0;
+  --navy:#0a1140;
+  --yellow:#ffd60a;
+  --red:#ff3347;
+  --cyan:#3be8ff;
+  --pink:#ff8bd0;
+  --white:#f6f9ff;
+  --bd:4px solid var(--navy);
+}
+*{ box-sizing:border-box; }
+:focus-visible{ outline:4px solid var(--red); outline-offset:3px; }
+
+body{
+  margin:0; min-height:100dvh;
+  font:500 clamp(16px, 0.9vw + 8px, 19px)/1.55 "Rubik", sans-serif;
+  -webkit-text-size-adjust:100%;
+  color:var(--navy);
+  background:
+    radial-gradient(circle, rgba(255,214,10,.3) 2px, transparent 2.6px) 0 0/22px 22px,
+    repeating-linear-gradient(115deg, #1b3df0 0 60px, #2b4dff 60px 120px);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+
+/* ---------- ticker + checker strip ---------- */
+.ticker{ background:var(--navy); color:var(--yellow); overflow:hidden; white-space:nowrap; padding:10px 0; position:relative; z-index:3; }
+.track{ display:inline-flex; animation:marquee 30s linear infinite; }
+.track span{ font:800 16px "Unbounded", sans-serif; padding:0 20px; }
+.track span:nth-child(even){ color:var(--cyan); }
+@keyframes marquee{ to{ transform:translateX(-50%); } }
+.checker{
+  height:24px; position:relative; z-index:3;
+  background:repeating-conic-gradient(var(--navy) 0 25%, var(--yellow) 0 50%) 0 0/24px 24px;
+  border-bottom:var(--bd);
+}
+
+/* ---------- falling rings ---------- */
+.ring{
+  position:fixed; top:-6%; z-index:2; pointer-events:none;
+  width:30px; height:30px; border-radius:50%;
+  border:6px solid var(--yellow);
+  box-shadow:0 0 0 2px var(--navy), inset 0 0 0 2px var(--navy);
+  animation:fall linear infinite;
+}
+@keyframes fall{ to{ transform:translateY(112vh) rotate(360deg); } }
+
+/* ---------- language switch ---------- */
+.lang-switch{
+  position:fixed; top:5px; right:10px; z-index:30;
+  display:flex; gap:4px; padding:4px;
+  background:var(--white); border:3px solid var(--navy); border-radius:999px;
+  box-shadow:3px 3px 0 var(--red);
+}
+.lang-switch button{
+  border:none; background:transparent; cursor:pointer;
+  font:800 12px "Unbounded", sans-serif; color:var(--navy);
+  padding:6px 12px; border-radius:999px;
+}
+.lang-switch button.active{ background:var(--yellow); box-shadow:inset 0 0 0 2px var(--navy); }
+
+/* ---------- hero wordmark ---------- */
+.page-wrap{
+  position:relative; z-index:1; max-width:1560px; margin:0 auto;
+  padding:clamp(20px, 3vw, 44px) clamp(12px, 3vw, 40px) clamp(28px, 4vw, 56px);
+}
+.hero{ text-align:center; margin-bottom:clamp(18px, 3vw, 40px); }
+h1.site-title{
+  margin:0; line-height:1; text-transform:uppercase;
+  font:900 clamp(40px, 10.5vw, 170px)/1 "Unbounded", sans-serif;
+  color:var(--yellow);
+  -webkit-text-stroke:clamp(3px, .45vw, 8px) var(--navy);
+  paint-order:stroke fill;
+  filter:drop-shadow(.04em .04em 0 var(--red)) drop-shadow(.08em .08em 0 var(--navy));
+  transform:rotate(-2deg);
+  animation:slam .7s cubic-bezier(.2,1.5,.4,1) both;
+}
+@keyframes slam{ from{ transform:rotate(-2deg) scale(1.5); opacity:0; } to{ transform:rotate(-2deg) scale(1); opacity:1; } }
+.subtitle{
+  display:inline-block; margin:-.4em 0 0; position:relative;
+  font:800 clamp(15px, 1.5vw, 24px) "Unbounded", sans-serif;
+  color:#fff; background:var(--red);
+  border:var(--bd); border-radius:10px; padding:8px 22px;
+  box-shadow:6px 6px 0 var(--navy);
+  transform:rotate(2deg);
+}
+
+/* ---------- main card ---------- */
+.card{
+  background:
+    linear-gradient(rgba(27,61,240,.09) 1px, transparent 1px) 0 0/30px 30px,
+    linear-gradient(90deg, rgba(27,61,240,.09) 1px, transparent 1px) 0 0/30px 30px,
+    var(--white);
+  border:6px solid var(--navy);
+  border-radius:clamp(20px, 3vw, 36px);
+  box-shadow:14px 14px 0 var(--navy), 14px 14px 0 4px var(--yellow);
+  padding:clamp(24px, 4.5vw, 72px) clamp(18px, 5vw, 88px);
+}
+.layout{
+  display:grid;
+  grid-template-columns:clamp(300px, 28vw, 440px) minmax(0, 1fr);
+  gap:clamp(36px, 4.5vw, 80px);
+  align-items:start;
+}
+@media(max-width:860px){ .layout{ grid-template-columns:minmax(0, 1fr); gap:36px; } }
+
+.sidebar{ text-align:center; }
+@media(min-width:861px){
+  .sidebar{ border-right:4px dashed var(--navy); padding-right:clamp(28px, 3.2vw, 56px); }
+}
+@media(max-width:860px){
+  .sidebar{ padding-bottom:36px; border-bottom:4px dashed var(--navy); }
+  .sidebar .about{ max-width:520px; margin-left:auto; margin-right:auto; }
+}
+
+/* avatar with spinning sunburst */
+.avatar{ position:relative; width:clamp(160px, 14vw, 230px); aspect-ratio:1; margin:34px auto 44px; }
+.avatar::before{
+  content:""; position:absolute; inset:-24%; border-radius:50%;
+  background:repeating-conic-gradient(var(--yellow) 0 10deg, var(--red) 0 20deg);
+  border:var(--bd); box-shadow:7px 7px 0 var(--navy);
+  animation:spin 40s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.avatar-frame{
+  position:absolute; inset:0; border-radius:50%; overflow:hidden;
+  border:6px solid var(--navy);
+  background:radial-gradient(circle at 35% 30%, #fff, var(--cyan));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:5px 5px 0 var(--navy);
+}
+.avatar-frame svg{ width:58px; height:58px; }
+.avatar-frame img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+
+.divider{
+  height:16px; margin:26px 0; border:3px solid var(--navy); border-radius:999px;
+  background:repeating-linear-gradient(-45deg, var(--yellow) 0 12px, var(--navy) 12px 24px);
+}
+
+.about{
+  text-align:left; background:#fff; border:var(--bd); border-radius:16px;
+  padding:clamp(16px, 1.6vw, 24px); box-shadow:6px 6px 0 var(--blue);
+  transform:rotate(-.8deg);
+}
+.about p{ margin:0; line-height:1.75; font-size:clamp(16px, 1.1vw, 19px); }
+.about b{ font-weight:800; background:linear-gradient(transparent 55%, var(--yellow) 55%); }
+
+.socials{ display:flex; justify-content:center; gap:14px; margin-top:32px; }
+.socials a{
+  width:clamp(50px, 3.6vw, 60px); height:clamp(50px, 3.6vw, 60px);
+  display:flex; align-items:center; justify-content:center;
+  border:3px solid var(--navy); border-radius:14px; box-shadow:4px 4px 0 var(--navy);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.socials a:nth-child(1){ background:var(--yellow); transform:rotate(-4deg); }
+.socials a:nth-child(2){ background:var(--cyan); transform:rotate(3deg); }
+.socials a:nth-child(3){ background:var(--pink); transform:rotate(-2deg); }
+.socials a:nth-child(4){ background:var(--red); transform:rotate(4deg); }
+.socials a:hover{ transform:translate(-3px,-3px) rotate(0); box-shadow:8px 8px 0 var(--navy); }
+.socials svg{ width:clamp(22px, 1.6vw, 27px); height:clamp(22px, 1.6vw, 27px); fill:var(--navy); }
+
+footer{
+  margin-top:34px; font:400 clamp(22px, 1.9vw, 30px) "Marck Script", cursive;
+  color:var(--red); transform:rotate(-3deg);
+}
+
+/* ---------- main column ---------- */
+section{ margin-bottom:clamp(30px, 3.4vw, 52px); }
+section h2{
+  display:inline-block; margin:0 0 22px;
+  font:800 clamp(19px, 1.9vw, 30px) "Unbounded", sans-serif;
+  color:#fff; background:var(--blue);
+  border:var(--bd); border-radius:12px; padding:8px 20px;
+  box-shadow:6px 6px 0 var(--yellow), 6px 6px 0 3px var(--navy);
+}
+.fan h2{ transform:rotate(-1.5deg); }
+.mus h2{ transform:rotate(1.2deg); background:var(--red); box-shadow:6px 6px 0 var(--cyan), 6px 6px 0 3px var(--navy); }
+
+.two-col{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(20px, 2.2vw, 34px); }
+@media(max-width:560px){ .two-col{ grid-template-columns:minmax(0, 1fr); } }
+
+.mini-box{
+  border:var(--bd); border-radius:18px;
+  padding:clamp(18px, 1.8vw, 30px) clamp(18px, 2vw, 32px);
+}
+.mini-box.likes{ background:var(--yellow); box-shadow:8px 8px 0 var(--navy); transform:rotate(-1.2deg); }
+.mini-box.dislikes{ background:var(--navy); color:#fff; box-shadow:8px 8px 0 var(--red); transform:rotate(1.2deg); }
+.mini-box h3{
+  display:inline-block; margin:0 0 14px; padding:6px 14px; border-radius:8px;
+  font:800 clamp(13px, 1vw, 16px) "Unbounded", sans-serif;
+}
+.likes h3{ background:var(--navy); color:var(--yellow); transform:rotate(-2deg); }
+.dislikes h3{ background:var(--yellow); color:var(--navy); transform:rotate(2deg); }
+.mini-box ul{ margin:0; padding:0; list-style:none; font-weight:700; font-size:clamp(16px, 1.15vw, 20px); line-height:1.6; }
+.mini-box li{ padding-left:30px; position:relative; margin-bottom:8px; }
+.mini-box li::before{ content:"★"; position:absolute; left:0; }
+.likes li::before{ color:var(--red); }
+.dislikes li::before{ color:var(--cyan); }
+
+.chips{ display:flex; flex-wrap:wrap; gap:clamp(12px, 1.2vw, 20px); }
+.chip{
+  padding:clamp(9px, .8vw, 13px) clamp(18px, 1.6vw, 28px); border-radius:999px;
+  font:800 clamp(14.5px, 1vw, 17px) "Rubik", sans-serif;
+  border:3px solid var(--navy); box-shadow:5px 5px 0 var(--navy);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+a.chip{ color:var(--navy); text-decoration:none; display:inline-block; cursor:pointer; }
+.chip:nth-child(4n+1){ background:var(--yellow); transform:rotate(-2deg); }
+.chip:nth-child(4n+2){ background:var(--cyan); transform:rotate(1.5deg); }
+.chip:nth-child(4n+3){ background:var(--pink); transform:rotate(-1deg); }
+.chip:nth-child(4n+4){ background:#fff; transform:rotate(2.2deg); }
+a.chip:hover{ transform:translate(-3px,-3px) rotate(0) scale(1.06); box-shadow:9px 9px 0 var(--navy); }
+
+.art{
+  display:block; width:100%; margin:6px 0 10px;
+  border:5px solid var(--navy); border-radius:20px;
+  box-shadow:10px 10px 0 var(--red); transform:rotate(.7deg);
+}
+
+.info-btn-wrap{ margin:8px 0 6px; text-align:center; }
+.info-btn{
+  font:800 clamp(16px, 1.3vw, 22px) "Unbounded", sans-serif;
+  color:#fff; background:var(--red); cursor:pointer;
+  border:var(--bd); border-radius:18px;
+  padding:clamp(14px, 1.3vw, 20px) clamp(24px, 2.8vw, 48px);
+  box-shadow:8px 8px 0 var(--navy);
+  animation:bump 2.4s ease-in-out infinite;
+  transition:box-shadow .1s ease;
+}
+@keyframes bump{ 0%,100%{ transform:scale(1) rotate(-1deg); } 50%{ transform:scale(1.05) rotate(1deg); } }
+.info-btn:hover{ background:var(--blue); animation:none; transform:translate(3px,3px); box-shadow:4px 4px 0 var(--navy); }
+.info-btn:active{ transform:translate(8px,8px); box-shadow:0 0 0 var(--navy); }
+
+/* ---------- modal ---------- */
+.modal-overlay{
+  position:fixed; inset:0; z-index:40; display:none; align-items:center; justify-content:center; padding:20px;
+  background:radial-gradient(circle, rgba(255,214,10,.35) 2px, transparent 2.6px) 0 0/18px 18px, rgba(10,17,64,.82);
+}
+.modal-overlay.open{ display:flex; }
+.modal{
+  position:relative; max-width:520px; width:100%; max-height:calc(100dvh - 40px); overflow-y:auto;
+  background:var(--white); border:6px solid var(--navy); border-radius:28px;
+  padding:44px 36px 36px; text-align:center;
+  box-shadow:12px 12px 0 var(--red), 12px 12px 0 4px var(--navy);
+  animation:modalIn .3s cubic-bezier(.2,1.5,.4,1) both;
+}
+@keyframes modalIn{ from{ opacity:0; transform:scale(.85) rotate(-3deg); } to{ opacity:1; transform:none; } }
+.modal h2{
+  display:block; margin:0 0 24px; padding:0; border:0; box-shadow:none; background:none;
+  font:900 clamp(26px, 5vw, 34px) "Unbounded", sans-serif; color:var(--blue);
+}
+.close-btn{
+  position:absolute; top:12px; right:12px; width:40px; height:40px;
+  border:3px solid var(--navy); border-radius:10px; background:var(--red); color:#fff;
+  font:800 22px/1 "Rubik", sans-serif; cursor:pointer; box-shadow:3px 3px 0 var(--navy);
+}
+.close-btn:hover{ background:var(--yellow); color:var(--navy); }
+.info-pill{
+  display:inline-block; margin-bottom:26px; padding:12px 24px;
+  background:var(--yellow); border:var(--bd); border-radius:999px;
+  font:800 clamp(14px, 3.5vw, 17px) "Unbounded", sans-serif;
+  box-shadow:5px 5px 0 var(--navy); transform:rotate(-2deg);
+}
+.ship-card{ border:var(--bd); border-radius:20px; padding:20px 22px; margin-top:20px; }
+.ship-card .label{ display:block; margin-bottom:6px; font:400 27px "Marck Script", cursive; }
+.ship-card .names{ font-weight:800; font-size:20px; }
+.ship-card.love{ background:var(--cyan); box-shadow:6px 6px 0 var(--navy); transform:rotate(1deg); }
+.ship-card.hate{ background:#fff; border:4px dashed var(--red); transform:rotate(-1deg); }
+.ship-card.hate .label{ color:var(--red); }
+.ship-card.hate .label .txt{ text-decoration:line-through; }
+.ship-card.hate .names{ font-style:italic; font-weight:700; font-size:17px; color:#5b6482; }
+
+@media(max-width:480px){
+  .modal{ padding:48px 20px 26px; }
+  .track span{ font-size:13px; }
+}
+@media(prefers-reduced-motion:reduce){
+  *{ animation:none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="ticker"><div class="track">
+  <span>SHOTAPOP</span><span>★</span><span>GOTTA GO FAST</span><span>★</span><span>ENFP</span><span>★</span><span>18.12.2005</span><span>★</span><span>SONIC</span><span>★</span><span>L4D2</span><span>★</span><span>BMTH</span><span>★</span>
+</div></div>
+<div class="checker"></div>
+
+<div class="ring" style="left:6%;  animation-duration:11s; animation-delay:0s;"></div>
+<div class="ring" style="left:22%; animation-duration:15s; animation-delay:2s;"></div>
+<div class="ring" style="left:47%; animation-duration:10s; animation-delay:5s;"></div>
+<div class="ring" style="left:63%; animation-duration:14s; animation-delay:1s;"></div>
+<div class="ring" style="left:81%; animation-duration:12s; animation-delay:3s;"></div>
+<div class="ring" style="left:94%; animation-duration:17s; animation-delay:6s;"></div>
+
+<div class="lang-switch">
+  <button id="btnRu" class="active" onclick="applyLang('ru')">RU</button>
+  <button id="btnEn" onclick="applyLang('en')">EN</button>
+</div>
+
+<div class="page-wrap">
+
+  <header class="hero">
+    <h1 class="site-title">Shotapop</h1>
+    <p class="subtitle i18n" data-ru="Шота · Алекс" data-en="Shota · Alex">Шота · Алекс</p>
+  </header>
+
+  <div class="card">
+    <div class="layout">
+
+      <div class="sidebar">
+        <div class="avatar">
+          <div class="avatar-frame">
+            <svg viewBox="0 0 24 24"><path d="M12 2 L14 9 L21 9 L15.5 13.5 L17.5 21 L12 16.5 L6.5 21 L8.5 13.5 L3 9 L10 9 Z" fill="var(--navy)"/></svg>
+            <img src="img/avatar.jpg" alt="Аватар" onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <div class="about">
+          <p class="i18n-html" data-ru='Привет, меня зовут <b>Шота</b>, можно <b>Алекс</b>. Он/его, 20 лет, учусь на граф. дизайнера. <b>ENFP (?)</b>, оптимист и экстраверт. ДР — 18 декабря 2005.' data-en='Hi, I&#39;m <b>Shota</b>, you can also call me <b>Alex</b>. He/him, 20 y.o., studying graphic design. <b>ENFP (?)</b>, an optimist and extrovert. Birthday — December 18, 2005.'>Привет, меня зовут <b>Шота</b>, можно <b>Алекс</b>. Он/его, 20 лет, учусь на граф. дизайнера. <b>ENFP (?)</b>, оптимист и экстраверт. ДР — 18 декабря 2005.</p>
+        </div>
+
+        <div class="socials">
+          <a href="https://x.com/shotapop_" title="X / Twitter"><svg viewBox="0 0 24 24"><path d="M3 3l7.5 9L3.5 21H6l6-6.8L17 21h4l-8-9.6L20.5 3H18l-5.5 6.2L8 3z"/></svg></a>
+          <a href="https://steamcommunity.com/id/shotapop/" title="Steam"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-9.95 9.05l5.6 2.3a3 3 0 011.7-.5l2.1-3.05v-.05a3.5 3.5 0 113.5 3.5h-.1l-3 2.15a2.7 2.7 0 01-5.35.55L2.3 14.4A10 10 0 1012 2zM8.3 17.3a1.7 1.7 0 01-2.15-1.05l1.9.8a1.3 1.3 0 10.95-2.4l-1.95-.8a1.7 1.7 0 011.9 3l-.65-.27a2.5 2.5 0 01.5 1.9zm7.6-6.3a2.3 2.3 0 112.3-2.3 2.3 2.3 0 01-2.3 2.3zm0-3.6a1.3 1.3 0 101.3 1.3 1.3 1.3 0 00-1.3-1.3z"/></svg></a>
+          <a href="https://t.me/shotapop" title="Telegram"><svg viewBox="0 0 24 24"><path d="M21 4L2.5 11.3c-1 .4-1 1.7.1 2l4.6 1.4 1.8 5.6c.3.9 1.4 1.1 2 .4l2.6-2.8 4.8 3.6c.9.6 2.1.1 2.3-1L23 5.4c.2-1.1-.9-1.9-2-1.4zM8.8 14.4l8.4-6.8-9.7 7.9-.2 3.3z"/></svg></a>
+          <a href="https://discord.com/users/832663110267306104" title="Discord"><svg viewBox="0 0 24 24"><path d="M19 5.5c-1.4-.7-2.8-1.1-4.3-1.4l-.2.5c-1-.15-2-.15-3 0l-.2-.5c-1.5.3-2.9.7-4.3 1.4C4.6 9 3.9 12.3 4.2 15.6c1.6 1.2 3.1 1.9 4.6 2.3l.6-1c-.8-.3-1.6-.7-2.3-1.2.2-.15.4-.3.6-.45 3.1 1.4 6.4 1.4 9.5 0 .2.15.4.3.6.45-.7.5-1.5.9-2.3 1.2l.6 1c1.5-.4 3-1.1 4.6-2.3.4-3.8-.6-7-2.3-10.1zM9.6 13.8c-.7 0-1.3-.7-1.3-1.5s.6-1.5 1.3-1.5 1.3.7 1.3 1.5-.6 1.5-1.3 1.5zm4.8 0c-.7 0-1.3-.7-1.3-1.5s.6-1.5 1.3-1.5 1.3.7 1.3 1.5-.6 1.5-1.3 1.5z"/></svg></a>
+        </div>
+
+        <footer class="i18n" data-ru="✧ тихо, тепло, по-своему ✧" data-en="✧ quiet, warm, in my own way ✧">✧ тихо, тепло, по-своему ✧</footer>
+      </div>
+
+      <div class="main">
+
+        <section class="two-col">
+          <div class="mini-box likes">
+            <h3 class="i18n" data-ru="♡ НРАВИТСЯ !" data-en="♡ LIKES !">♡ НРАВИТСЯ !</h3>
+            <ul>
+              <li class="i18n" data-ru="Общение, внимание" data-en="Socializing and attention">Общение, внимание</li>
+              <li class="i18n" data-ru="Игры, аниме, дизайн" data-en="Games, anime, design">Игры, аниме, дизайн</li>
+            </ul>
+          </div>
+          <div class="mini-box dislikes">
+            <h3 class="i18n" data-ru="˙◠˙ НЕ НРАВИТСЯ ..." data-en="˙◠˙ DISLIKES ...">˙◠˙ НЕ НРАВИТСЯ ...</h3>
+            <ul>
+              <li class="i18n" data-ru="Грубость, лицемерие" data-en="Rudeness, hypocrisy">Грубость, лицемерие</li>
+              <li class="i18n" data-ru="Буллинг, манипуляции" data-en="Bullying, manipulation">Буллинг, манипуляции</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="fan">
+          <h2 class="i18n" data-ru="Фандомы ✧" data-en="Fandoms ✧">Фандомы ✧</h2>
+          <div class="chips">
+            <a class="chip" href="https://share.google/SYvEzeHPZQJrn7U9E" target="_blank" rel="noopener noreferrer">Sonic the Hedgehog</a>
+            <a class="chip" href="https://share.google/suR5qfom4KqklJu2p" target="_blank" rel="noopener noreferrer">Link Click</a>
+            <a class="chip" href="https://share.google/9FVsnKQHwTlkDyCXe" target="_blank" rel="noopener noreferrer">Left 4 Dead 2</a>
+            <a class="chip" href="https://share.google/L3rd2YPzHcl3nfqRV" target="_blank" rel="noopener noreferrer">The Binding of Isaac</a>
+          </div>
+        </section>
+
+        <section class="mus">
+          <h2 class="i18n" data-ru="Музыка ✧" data-en="Music ✧">Музыка ✧</h2>
+          <div class="chips">
+            <a class="chip" href="https://share.google/07VGTJYtYDdymEt2g" target="_blank" rel="noopener noreferrer">CHANGETHEWXRLD</a>
+            <a class="chip" href="https://share.google/sQrhSz3TKJiiNTr5m" target="_blank" rel="noopener noreferrer">Bring Me The Horizon</a>
+            <a class="chip" href="https://share.google/tGF04q3P7CjvnFUa9" target="_blank" rel="noopener noreferrer">Architects</a>
+            <a class="chip" href="https://share.google/gXn6ww68wYOVowwsY" target="_blank" rel="noopener noreferrer">Crush 40</a>
+          </div>
+        </section>
+
+        <img class="art" src="img/artwork.jpg" alt="Арт" onerror="this.style.display='none'">
+
+        <div class="divider"></div>
+
+        <div class="info-btn-wrap">
+          <button class="info-btn i18n" data-ru="✧ Важная информация ✧" data-en="✧ Important info ✧"
+                  onclick="document.getElementById('infoModal').classList.add('open')">
+            ✧ Важная информация ✧
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="infoModal">
+  <div class="modal">
+    <button class="close-btn" aria-label="Close" onclick="document.getElementById('infoModal').classList.remove('open')">×</button>
+    <h2 class="i18n" data-ru="Особая деталь" data-en="Special detail">Особая деталь</h2>
+
+    <div class="info-pill">✨ <span class="i18n" data-ru="У меня соник-аутизм" data-en="I have Sonic autism">У меня соник-аутизм</span> ✨</div>
+
+    <div class="ship-card love">
+      <span class="label"><span class="i18n" data-ru="Любимые пейринги" data-en="Favorite ships">Любимые пейринги</span> ♡</span>
+      <span class="names i18n" data-ru="Сонтейлз и Шэдария" data-en="Sontails &amp; Shadaria">Сонтейлз и Шэдария</span>
+    </div>
+
+    <div class="ship-card hate">
+      <span class="label"><span class="txt i18n" data-ru="Ненавижу" data-en="Hate">Ненавижу</span> ✗</span>
+      <span class="names i18n" data-ru="Сонэдоу" data-en="Sonadow">Сонэдоу</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const track = document.querySelector('.track');
+  track.innerHTML += track.innerHTML; // duplicate for a seamless loop
+
+  const overlay = document.getElementById('infoModal');
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') overlay.classList.remove('open');
+  });
+  function applyLang(lang){
+    document.querySelectorAll('.i18n').forEach(el => {
+      el.textContent = el.getAttribute('data-' + lang);
+    });
+    document.querySelectorAll('.i18n-html').forEach(el => {
+      el.innerHTML = el.getAttribute('data-' + lang);
+    });
+    document.getElementById('btnRu').classList.toggle('active', lang === 'ru');
+    document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+    document.documentElement.lang = lang;
+  }
+</script>
+
+</body>
+</html>
